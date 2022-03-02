@@ -29,6 +29,22 @@ public class Enemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    void OnEnable() { 
+        //OnEnable(): 컴포넌트가 활성화될 때 호출되는 생명주기 함수
+        
+        switch (enemyName) {
+            case "L":
+                health = 20;
+                break;
+            case "M":
+                health = 10;
+                break;
+            case "S":
+                health = 3;
+                break;
+        }
+    }
+
     void Update()
     {
        Fire();
@@ -41,7 +57,7 @@ public class Enemy : MonoBehaviour
             return;
 
         if(enemyName == "S") {
-            GameObject bullet = objectManager.MakeObj("BulletEnemyA");
+            GameObject bullet = objectManager.MakeObj("bulletEnemyA");
             bullet.transform.position = transform.position;
             //= Instantiate(bulletObjA, transform.position, transform.rotation);
             Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
@@ -51,10 +67,10 @@ public class Enemy : MonoBehaviour
             Vector3 dirVec = player.transform.position - transform.position;
             rigid.AddForce(dirVec.normalized * 3, ForceMode2D.Impulse);
         }else if(enemyName == "L") {
-            GameObject bulletR = objectManager.MakeObj("BulletEnemyB");
+            GameObject bulletR = objectManager.MakeObj("bulletEnemyB");
             bulletR.transform.position = transform.position + Vector3.right * 0.3f;
             //= Instantiate(bulletObjB, transform.position + Vector3.right *0.3f, transform.rotation);
-            GameObject bulletL = objectManager.MakeObj("BulletEnemyB");
+            GameObject bulletL = objectManager.MakeObj("bulletEnemyB");
             bulletL.transform.position = transform.position + Vector3.left * 0.3f;
             //= Instantiate(bulletObjB, transform.position + Vector3.left *0.3f, transform.rotation);
             
@@ -99,16 +115,22 @@ public class Enemy : MonoBehaviour
             if(ran < 3) { //Not Item
                 Debug.Log("Not Item");
             }else if (ran < 6) { //Coin
-                GameObject itemCoin = objectManager.MakeObj("ItemCoin");
+                GameObject itemCoin = objectManager.MakeObj("itemCoin");
                 itemCoin.transform.position = transform.position;
                 //Instantiate(itemCoin, transform.position, itemCoin.transform.rotation);
             }else if (ran < 8) { //Power
-                Instantiate(itemPower, transform.position, itemCoin.transform.rotation);
+                GameObject itemPower = objectManager.MakeObj("itemPower");
+                itemPower.transform.position = transform.position;
+                //Instantiate(itemPower, transform.position, itemCoin.transform.rotation);
             }else if (ran < 10) { //Boom
-                Instantiate(itemBoom, transform.position, itemCoin.transform.rotation);
+                GameObject itemBoom = objectManager.MakeObj("itemBoom");
+                itemBoom.transform.position = transform.position;
+                //Instantiate(itemBoom, transform.position, itemCoin.transform.rotation);
             }
 
             gameObject.SetActive(false);
+            //Quaternion.identity: 기본 회전값 = 0
+            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -117,15 +139,17 @@ public class Enemy : MonoBehaviour
     }
     
     void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.tag == "BorderBullet")
+        if (collision.gameObject.tag == "BorderBullet") {
             //화면 밖으로 사라졌을 때
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
+        }
         else if(collision.gameObject.tag == "PlayerBullet") {
             //플레이어에게 피격당했을 때
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
 
-            gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
         }
     }
 }

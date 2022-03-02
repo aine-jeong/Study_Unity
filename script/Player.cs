@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
         switch(power) {
             case 1:
                 //Power 1
-                GameObject bullet = objectManager.MakeObj("BulletPlayerA");
+                GameObject bullet = objectManager.MakeObj("bulletPlayerA");
                 bullet.transform.position = transform.position;
 
                 Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
@@ -81,10 +81,10 @@ public class Player : MonoBehaviour
                 break;
             case 2:
                 //Power 2
-                GameObject bulletR = objectManager.MakeObj("BulletPlayerA");
+                GameObject bulletR = objectManager.MakeObj("bulletPlayerA");
                 bulletR.transform.position = transform.position + Vector3.right * 0.1f;
 
-                GameObject bulletL = objectManager.MakeObj("BulletPlayerA");
+                GameObject bulletL = objectManager.MakeObj("bulletPlayerA");
                 bulletL.transform.position = transform.position + Vector3.left * 0.1f;
 
                 Rigidbody2D rigidR = bulletR.GetComponent<Rigidbody2D>();
@@ -94,14 +94,14 @@ public class Player : MonoBehaviour
                 break;
             case 3:
                 //Power 3
-                GameObject bulletRR = objectManager.MakeObj("BulletPlayerA");
+                GameObject bulletRR = objectManager.MakeObj("bulletPlayerA");
                 bulletRR.transform.position = transform.position + Vector3.right * 0.35f;
 
-                GameObject bulletCC = objectManager.MakeObj("BulletPlayerB");
+                GameObject bulletCC = objectManager.MakeObj("bulletPlayerB");
                 //= Instantiate(bulletObjB, transform.position, transform.rotation);
                 bulletCC.transform.position = transform.position;
 
-                GameObject bulletLL = objectManager.MakeObj("BulletPlayerA"); 
+                GameObject bulletLL = objectManager.MakeObj("bulletPlayerA"); 
                // = Instantiate(bulletObjA, transform.position + Vector3.left * 0.35f, transform.rotation);
                 bulletLL.transform.position = transform.position + Vector3.left * 0.35f;
                 Rigidbody2D rigidRR = bulletRR.GetComponent<Rigidbody2D>();
@@ -141,18 +141,52 @@ public class Player : MonoBehaviour
         Invoke("OffBoomEffect", 2f);
 
         //2. Remove Enemy
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        for(int index = 0; index < enemies.Length; index++) {
-            //로직 가져오기
-            Enemy enemyLogic = enemies[index].GetComponent<Enemy>();
-            enemyLogic.OnHit(1000);
+        //GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        //오브젝트를 직접 찾는 Find계열 함수 -> 성능 부하 유발
+        GameObject[] enemiesL = objectManager.GetPool("enemyL");
+        GameObject[] enemiesM = objectManager.GetPool("enemyM");
+        GameObject[] enemiesS = objectManager.GetPool("enemyS");
+
+        for(int index = 0; index < enemiesL.Length; index++) {
+            if(enemiesL[index].activeSelf) {
+                //로직 가져오기
+                Enemy enemyLogic = enemiesL[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+        }
+
+        for(int index = 0; index < enemiesM.Length; index++) {
+            if(enemiesM[index].activeSelf) {
+                //로직 가져오기
+                Enemy enemyLogic = enemiesM[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+        }
+
+        for(int index = 0; index < enemiesS.Length; index++) {
+            if(enemiesS[index].activeSelf) {
+                //로직 가져오기
+                Enemy enemyLogic = enemiesS[index].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
         }
 
         //3. Remove Enemy Bullet
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
-        for(int index = 0; index < bullets.Length; index++) {
+        GameObject[] bulletsA = objectManager.GetPool("bulletEnemyA");
+        GameObject[] bulletsB = objectManager.GetPool("bulletEnemyB");
+
+        for(int index = 0; index < bulletsA.Length; index++) {
+            if (bulletsA[index].activeSelf) {
             //Destroy(bullets[index]);
-            gameObject.SetActive(false);
+                bulletsA[index].SetActive(false);
+            }
+        }
+
+        for(int index = 0; index < bulletsB.Length; index++) {
+            if (bulletsB[index].activeSelf) {
+            //Destroy(bullets[index]);
+                bulletsB[index].SetActive(false);
+            }
         }
 
     }
@@ -191,8 +225,8 @@ public class Player : MonoBehaviour
                 gameManager.RespawnPlayer();
             }
 
-            //gameObject.SetActive(false);
             gameObject.SetActive(false);
+            //collision.gameObject.SetActive(false);
             
         }
 
@@ -217,7 +251,8 @@ public class Player : MonoBehaviour
                     }
                     break;
             }
-            gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
+
         }
     }
 

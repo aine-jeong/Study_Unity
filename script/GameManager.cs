@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     public ObjectManager objectManager;
 
     void Awake() {
-        gameOverSet.SetActive(false);
-        enemyObjs = new string[] { "EnemyS", "EnemyM", "EnemyL" };
+        //gameOverSet.SetActive(false);
+        enemyObjs = new string[] { "enemyS", "enemyM", "enemyL" };
     }
     
     void Update() {

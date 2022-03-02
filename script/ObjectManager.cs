@@ -146,4 +146,41 @@ public class ObjectManager : MonoBehaviour
 
         return null; 
     }
+
+    public GameObject[] GetPool(string type) {
+        switch (type) {
+            case "enemyL":
+                targetPool = enemyL;
+                break;
+            case "enemyM":
+                targetPool = enemyM;
+                break;
+            case "enemyS":
+                targetPool = enemyS;
+                break;
+            case "itemCoin":
+                targetPool = itemCoin;
+                break;
+            case "itemPower":
+                targetPool = itemPower;
+                break;
+            case "itemBoom":
+                targetPool = itemBoom;
+                break;
+            case "bulletPlayerA":
+                targetPool = bulletPlayerA;
+                break;
+            case "bulletPlayerB":
+                targetPool = bulletPlayerB;
+                break;
+            case "bulletEnemyA":   
+                targetPool = bulletEnemyA;
+                break;
+            case "bulletEnemyB":
+                targetPool = bulletEnemyB;
+                break;
+        }
+        
+        return targetPool;
+    }
 }
